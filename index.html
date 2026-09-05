@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>90天英语重建计划 - Day 2</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f4f6f9;
+    color: #182033;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
+
+.container {
+    max-width: 720px;
+    margin: auto;
+    padding: 20px 15px 50px;
+}
+
+.header {
+    background: #182033;
+    color: white;
+    padding: 25px 20px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.header p {
+    margin: 8px 0 0;
+    opacity: .8;
+}
+
+.player {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 5px 25px rgba(0,0,0,.06);
+    margin-bottom: 15px;
+}
+
+.current {
+    text-align: center;
+    padding: 15px 5px;
+}
+
+.current-number {
+    font-size: 14px;
+    color: #7a8495;
+}
+
+.current-text {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+.current-cn {
+    color: #7a8495;
+}
+
+.progress-bg {
+    height: 7px;
+    background: #e8ebf0;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #182033;
+    transition: width .3s;
+}
+
+.main-button {
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    padding: 16px;
+    font-size: 18px;
+    background: #182033;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 8px;
+}
+
+button {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 5px;
+    font-size: 15px;
+    background: #eef1f5;
+    color: #182033;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.settings {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.settings button {
+    flex: 1;
+}
+
+.sentences {
+    background: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+
+.sentence {
+    padding: 16px 0;
+    border-bottom: 1px solid #edf0f3;
+}
+
+.sentence:last-child {
+    border-bottom: none;
+}
+
+.sentence.active {
+    background: #f3f5f8;
+    margin: 0 -10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 12px;
+}
+
+.number {
+    font-size: 13px;
+    color: #8a93a3;
+}
+
+.english {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.chinese {
+    color: #737d8e;
+    margin-top: 5px;
+}
+
+.blind .english {
+    visibility: hidden;
+}
+
+.tip {
+    text-align: center;
+    font-size: 13px;
+    color: #8a93a3;
+    line-height: 1.6;
+    margin-top: 20px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>🇺🇸 90天英语重建计划</h1>
+<p>Day 2｜外贸英语 · 今日全部盲听</p>
+</div>
+
+
+<div class="player">
+
+<div class="current">
+
+<div class="current-number" id="currentNumber">
+准备播放
+</div>
+
+<div class="current-text" id="currentText">
+点击开始播放
+</div>
+
+<div class="current-cn" id="currentCn">
+Day 2 · 14个核心例句
+</div>
+
+</div>
+
+
+<div class="progress-bg">
+<div class="progress" id="progress"></div>
+</div>
+
+
+<button class="main-button" id="playButton">
+▶️ 开始全部播放
+</button>
+
+
+<div class="buttons">
+
+<button onclick="previousSentence()">
+⏮ 上一句
+</button>
+
+<button onclick="nextSentence()">
+⏭ 下一句
+</button>
+
+<button onclick="repeatSentence()">
+🔁 单句
+</button>
+
+</div>
+
+
+<div class="settings">
+
+<button onclick="toggleLoop()" id="loopButton">
+🔄 循环：开
+</button>
+
+<button onclick="toggleBlind()" id="blindButton">
+👁️ 盲听：关
+</button>
+
+</div>
+
+
+<div class="settings">
+
+<button onclick="changeSpeed(-1)">
+🐢 慢速
+</button>
+
+<button onclick="changeSpeed(0)">
+▶️ 1.0×
+</button>
+
+<button onclick="changeSpeed(1)">
+🚀 快速
+</button>
+
+</div>
+
+</div>
+
+
+<div class="sentences" id="sentenceList">
+</div>
+
+
+<div class="tip">
+
+🇺🇸 默认使用 en-US 美式英语<br>
+如果设备有多个英文声音，具体声音由你的 iPhone / 浏览器系统决定。<br><br>
+
+建议训练方式：<br>
+第一遍看英文 → 第二遍开启盲听 → 第三遍跟着说 → 最后完全盲听。
+
+</div>
+
+</div>
+
+
+<script>
+
+const sentences = [
+
+["I buy fruit.", "我买水果。"],
+
+["I sell fruit.", "我卖水果。"],
+
+["I check the price.", "我确认价格。"],
+
+["I know the price.", "我知道价格。"],
+
+["We sell fresh fruit.", "我们销售新鲜水果。"],
+
+["We buy fruit from China.", "我们从中国采购水果。"],
+
+["We send fruit to Dubai.", "我们把水果发往迪拜。"],
+
+["He works here.", "他在这里工作。"],
+
+["She sells fruit.", "她销售水果。"],
+
+["We sell fresh blueberries.", "我们销售新鲜蓝莓。"],
+
+["We can send you the price.", "我们可以把价格发给你。"],
+
+["I need to check the price.", "我需要确认价格。"],
+
+["I want to know the quantity.", "我想知道数量。"],
+
+["We have a new customer.", "我们有一个新客户。"]
+
+];
+
+
+let current = 0;
+
+let playing = false;
+
+let loop = true;
+
+let blind = false;
+
+let speed = 1.0;
+
+let voices = [];
+
+
+const playButton =
+document.getElementById("playButton");
+
+const currentNumber =
+document.getElementById("currentNumber");
+
+const currentText =
+document.getElementById("currentText");
+
+const currentCn =
+document.getElementById("currentCn");
+
+const progress =
+document.getElementById("progress");
+
+const sentenceList =
+document.getElementById("sentenceList");
+
+
+function loadVoices() {
+
+voices = speechSynthesis.getVoices();
+
+}
+
+
+speechSynthesis.onvoiceschanged =
+loadVoices;
+
+loadVoices();
+
+
+function getAmericanVoice() {
+
+let americanVoices =
+voices.filter(v =>
+v.lang &&
+v.lang.toLowerCase() === "en-us"
+);
+
+if (americanVoices.length > 0) {
+
+return americanVoices[0];
+
+}
+
+return null;
+
+}
+
+
+function renderSentences() {
+
+sentenceList.innerHTML = "";
+
+sentences.forEach((item,index) => {
+
+let div =
+document.createElement("div");
+
+div.className = "sentence";
+
+if (index === current) {
+
+div.classList.add("active");
+
+}
+
+if (blind) {
+
+div.classList.add("blind");
+
+}
+
+div.innerHTML =
+
+'<div class="number">第 ' +
+(index + 1) +
+' 句</div>' +
+
+'<div class="english">' +
+item[0] +
+'</div>' +
+
+'<div class="chinese">' +
+item[1] +
+'</div>';
+
+div.onclick = function() {
+
+current = index;
+
+updateDisplay();
+
+if (playing) {
+
+speakCurrent();
+
+}
+
+};
+
+sentenceList.appendChild(div);
+
+});
+
+}
+
+
+function updateDisplay() {
+
+currentNumber.innerText =
+"第 " + (current + 1) +
+" / " + sentences.length + " 句";
+
+currentText.innerText =
+sentences[current][0];
+
+currentCn.innerText =
+sentences[current][1];
+
+progress.style.width =
+((current + 1) /
+sentences.length * 100) + "%";
+
+renderSentences();
+
+}
+
+
+function speakCurrent() {
+
+speechSynthesis.cancel();
+
+let utterance =
+new SpeechSynthesisUtterance(
+sentences[current][0]
+);
+
+utterance.lang = "en-US";
+
+utterance.rate = speed;
+
+utterance.pitch = 1;
+
+let voice =
+getAmericanVoice();
+
+if (voice) {
+
+utterance.voice = voice;
+
+}
+
+
+utterance.onend = function() {
+
+if (!playing) {
+
+return;
+
+}
+
+if (current <
+sentences.length - 1) {
+
+current++;
+
+updateDisplay();
+
+setTimeout(
+speakCurrent,
+500
+);
+
+}
+
+else {
+
+if (loop) {
+
+current = 0;
+
+updateDisplay();
+
+setTimeout(
+speakCurrent,
+800
+);
+
+}
+
+else {
+
+playing = false;
+
+playButton.innerText =
+"▶️ 开始全部播放";
+
+}
+
+}
+
+};
+
+
+speechSynthesis.speak(
+utterance
+);
+
+}
+
+
+playButton.onclick =
+function() {
+
+if (playing) {
+
+playing = false;
+
+speechSynthesis.cancel();
+
+playButton.innerText =
+"▶️ 开始全部播放";
+
+return;
+
+}
+
+playing = true;
+
+playButton.innerText =
+"⏸️ 暂停播放";
+
+speakCurrent();
+
+};
+
+
+function nextSentence() {
+
+speechSynthesis.cancel();
+
+if (current <
+sentences.length - 1) {
+
+current++;
+
+}
+
+else {
+
+current = loop ? 0 : current;
+
+}
+
+updateDisplay();
+
+if (playing) {
+
+setTimeout(
+speakCurrent,
+200
+);
+
+}
+
+}
+
+
+function previousSentence() {
+
+speechSynthesis.cancel();
+
+if (current > 0) {
+
+current--;
+
+}
+
+else {
+
+current =
+sentences.length - 1;
+
+}
+
+updateDisplay();
+
+if (playing) {
+
+setTimeout(
+speakCurrent,
+200
+);
+
+}
+
+}
+
+
+function repeatSentence() {
+
+speechSynthesis.cancel();
+
+updateDisplay();
+
+if (playing) {
+
+setTimeout(
+speakCurrent,
+200
+);
+
+}
+
+}
+
+
+function toggleLoop() {
+
+loop = !loop;
+
+document.getElementById(
+"loopButton"
+).innerText =
+"🔄 循环：" +
+(loop ? "开" : "关");
+
+}
+
+
+function toggleBlind() {
+
+blind = !blind;
+
+document.getElementById(
+"blindButton"
+).innerText =
+"👁️ 盲听：" +
+(blind ? "开" : "关");
+
+renderSentences();
+
+}
+
+
+function changeSpeed(type) {
+
+if (type === -1) {
+
+speed = 0.75;
+
+}
+
+else if (type === 1) {
+
+speed = 1.25;
+
+}
+
+else {
+
+speed = 1.0;
+
+}
+
+if (playing) {
+
+speechSynthesis.cancel();
+
+setTimeout(
+speakCurrent,
+200
+);
+
+}
+
+}
+
+
+updateDisplay();
+
+</script>
+
+</body>
+</html>
